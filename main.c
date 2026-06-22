@@ -2,27 +2,66 @@
 #include <stdlib.h>
 #include <time.h>
 
-int main() {
-    int number, guess, attempts = 0;
-    srand(time(0));
-    number = rand() % 100 + 1; 
+#define MIN_NUMBER 1
+#define MAX_NUMBER 100
 
-    printf("Welcome to 'Guess the Number'!\n");
-    printf("I have selected a number between 1 and 100. Can you guess it?\n");
+void show_intro(void);
+int generate_number(void);
+int get_guess(void);
+int check_guess(int guess, int secret);
+
+int main(void)
+{
+    int secret = generate_number();
+    int guess ;
+    int attempts = 0;
+
+    show_intro();
 
     do {
-        printf("Enter your guess: ");
-        scanf("%d", &guess);
-        attempts++;
+        guess = get_guess();
+        ++attempts;
 
-        if (guess < number) {
-            printf("Too low! Try again.\n");
-        } else if (guess > number) {
-            printf("Too high! Try again.\n");
-        } else {
-            printf("Congratulations! You've guessed the number %d in %d attempts.\n", number, attempts);
-        }
-    } while (guess != number);
+    }while (!check_guess(guess, secret));
+
+    printf("\nYou guessed it in %d attempts!\n", attempts);
 
     return 0;
+}
+
+void show_intro(void) {
+    printf("====================================\n");
+    printf("         TRY GUESS THE NUMBER       \n");
+    printf("====================================\n");
+
+   printf("Guess a number between %d and %d\n\n", MIN_NUMBER, MAX_NUMBER);
+}
+
+int generate_number(void) {
+    srand(time(NULL));
+
+    return rand() % MAX_NUMBER + MIN_NUMBER;
+}
+
+int get_guess(void) {
+    int guess;
+
+    printf("Enter your guess: ");
+    scanf("%d", &guess);
+    return guess;
+}
+
+int check_guess(int guess, int secret) {
+    if (guess < secret) {
+        printf("Too low!\n\n");
+        return 0;
+    }
+
+    if (guess > secret) {
+        printf("Too high!\n\n");
+        return 0;
+    }
+
+    printf("\nCorrect! the number was %d.\n", secret);
+    return 1;
 }
